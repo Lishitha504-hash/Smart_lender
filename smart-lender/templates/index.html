@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lender</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static',filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="mainContainer">
+
+<div class="topHeader">
+
+<div>
+
+<h1>🏦 Smart Lender</h1>
+
+<p>
+AI-Powered Loan Approval Prediction System
+</p>
+
+</div>
+
+<div class="modelCard">
+
+<h3>AI Model</h3>
+
+<h2>Random Forest</h2>
+
+<span>
+Accuracy:98.13%
+</span>
+
+</div>
+
+</div>
+
+
+
+<div class="dashboard">
+
+<!-- LEFT PANEL -->
+
+<div class="leftPanel">
+
+<div class="panel">
+
+<div class="panelHeader blue">
+
+<h2>👤 Applicant Information</h2>
+
+<p>Please enter the details below</p>
+
+</div>
+
+
+<form id="predictionForm">
+
+<div class="grid">
+
+
+<div class="inputBox">
+<label>Annual Income (₹)</label>
+<input type="number" id="income_annual" required>
+</div>
+
+
+<div class="inputBox">
+<label>Loan Amount (₹)</label>
+<input type="number" id="loan_amount" required>
+</div>
+
+
+<div class="inputBox">
+<label>Loan Term</label>
+<input type="number" id="loan_term" required>
+</div>
+
+
+<div class="inputBox">
+<label>CIBIL Score</label>
+<input type="number" id="cibil_score" required>
+</div>
+
+
+<div class="inputBox">
+<label>No. Dependents</label>
+<input type="number" id="no_of_dependents" required>
+</div>
+
+
+<div class="inputBox">
+
+<label>Education</label>
+
+<select id="education">
+
+<option value="0">
+Not Graduate
+</option>
+
+<option value="1">
+Graduate
+</option>
+
+</select>
+
+</div>
+
+
+<div class="inputBox">
+
+<label>Employment</label>
+
+<select id="self_employment">
+
+<option value="0">
+Salaried
+</option>
+
+<option value="1">
+Self Employed
+</option>
+
+</select>
+
+</div>
+
+
+<div class="inputBox">
+<label>Residential Assets</label>
+<input type="number"
+id="residential_assets"
+required>
+</div>
+
+
+<div class="inputBox">
+<label>Commercial Assets</label>
+<input type="number"
+id="commercial_assets"
+required>
+</div>
+
+
+<div class="inputBox">
+<label>Luxury Assets</label>
+<input type="number"
+id="luxury_assets"
+required>
+</div>
+
+
+<div class="inputBox fullWidth">
+<label>Bank Assets</label>
+<input type="number"
+id="bank_assets"
+required>
+</div>
+
+</div>
+
+
+<button
+class="predictBtn"
+type="submit">
+
+🚀 Predict Loan Status
+
+</button>
+
+
+<div class="buttonGrid">
+
+<button
+type="button"
+class="greenBtn"
+onclick="fillApprovedSample()">
+
+✅ Approved Sample
+
+</button>
+
+<button
+type="button"
+class="redBtn"
+onclick="fillRejectedSample()">
+
+❌ Rejected Sample
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+
+<!-- RIGHT PANEL -->
+
+<div class="rightPanel">
+
+<div class="panel">
+
+<div class="panelHeader purple">
+
+<h2>📊 Prediction Result</h2>
+
+<p>AI prediction will appear here</p>
+
+</div>
+
+<div id="resultContent">
+
+<div class="predictionBox">
+
+<div class="emptyPrediction">
+
+<h1>📋</h1>
+
+<h2>Not Yet Predicted</h2>
+
+<p>
+Fill the form and click
+"Predict Loan Status"
+to see the prediction result
+</p>
+
+</div>
+
+
+<div class="infoCard">
+
+<h3>📊 Probability Analysis</h3>
+
+<br>
+
+<div class="probRow">
+
+<p>Approval Probability</p>
+
+<span class="greenText">--%</span>
+
+</div>
+
+<div class="progress">
+
+<div class="approvedBar"
+style="width:8%">
+
+--%
+
+</div>
+
+</div>
+
+
+<div class="probRow">
+
+<p>Rejection Probability</p>
+
+<span class="redText">--%</span>
+
+</div>
+
+<div class="progress">
+
+<div class="rejectedBar"
+style="width:8%">
+
+--%
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="decisionCard">
+
+<h3>💡 Decision Factors</h3>
+
+<p>
+Key factors influencing the
+decision will appear here
+after prediction
+</p>
+
+</div>
+
+
+<div class="infoCard">
+
+<h3>🤖 Model Information</h3>
+
+<div class="modelGrid">
+
+<div>
+
+<p>Algorithm</p>
+
+<b>Random Forest</b>
+
+</div>
+
+<div>
+
+<p>Total Features</p>
+
+<b>11</b>
+
+</div>
+
+<div>
+
+<p>Accuracy</p>
+
+<b>98.13%</b>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="buttonGrid">
+
+<button onclick="location.reload()">
+
+🔄 Predict Again
+
+</button>
+
+<button style="background:#f9a602">
+
+🗑 Clear Form
+
+</button>
+
+
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<script>
+
+/* ---------- Approved Sample ---------- */
+
+function fillApprovedSample(){
+
+document.getElementById("income_annual").value=1500000;
+document.getElementById("loan_amount").value=500000;
+document.getElementById("loan_term").value=24;
+document.getElementById("cibil_score").value=820;
+document.getElementById("no_of_dependents").value=1;
+document.getElementById("education").value=1;
+document.getElementById("self_employment").value=0;
+document.getElementById("residential_assets").value=1000000;
+document.getElementById("commercial_assets").value=500000;
+document.getElementById("luxury_assets").value=300000;
+document.getElementById("bank_assets").value=400000;
+
+}
+
+
+/* ---------- Rejected Sample ---------- */
+
+function fillRejectedSample(){
+
+document.getElementById("income_annual").value=300000;
+document.getElementById("loan_amount").value=2500000;
+document.getElementById("loan_term").value=24;
+document.getElementById("cibil_score").value=420;
+document.getElementById("no_of_dependents").value=5;
+document.getElementById("education").value=0;
+document.getElementById("self_employment").value=1;
+document.getElementById("residential_assets").value=100000;
+document.getElementById("commercial_assets").value=0;
+document.getElementById("luxury_assets").value=50000;
+document.getElementById("bank_assets").value=20000;
+
+}
+
+
+/* ---------- Clear Form ---------- */
+
+function clearForm(){
+
+document.getElementById(
+"predictionForm"
+).reset();
+
+location.reload();
+
+}
+
+
+/* ---------- Prediction ---------- */
+
+document.getElementById(
+"predictionForm"
+).addEventListener(
+
+"submit",
+
+async function(e){
+
+e.preventDefault();
+
+const data={
+
+income_annual:
+document.getElementById(
+"income_annual"
+).value,
+
+loan_amount:
+document.getElementById(
+"loan_amount"
+).value,
+
+loan_term:
+document.getElementById(
+"loan_term"
+).value,
+
+cibil_score:
+document.getElementById(
+"cibil_score"
+).value,
+
+no_of_dependents:
+document.getElementById(
+"no_of_dependents"
+).value,
+
+education:
+document.getElementById(
+"education"
+).value,
+
+self_employment:
+document.getElementById(
+"self_employment"
+).value,
+
+residential_assets:
+document.getElementById(
+"residential_assets"
+).value,
+
+commercial_assets:
+document.getElementById(
+"commercial_assets"
+).value,
+
+luxury_assets:
+document.getElementById(
+"luxury_assets"
+).value,
+
+bank_assets:
+document.getElementById(
+"bank_assets"
+).value
+
+};
+
+
+const response=
+await fetch(
+"/predict",
+{
+method:"POST",
+
+headers:{
+"Content-Type":
+"application/json"
+},
+
+body:
+JSON.stringify(data)
+
+}
+
+);
+
+
+const result=
+await response.json();
+
+
+document.getElementById(
+"resultContent"
+).innerHTML=`
+
+<div class="${
+result.prediction==="Approved"
+?
+"approved"
+:
+"rejected"
+}">
+
+<h1>
+${result.prediction}
+</h1>
+
+</div>
+
+<br>
+
+<h3>
+
+Confidence:
+${result.confidence}%
+
+</h3>
+
+
+<div class="infoCard">
+
+<h3>
+📊 Probability Analysis
+</h3>
+
+<p>
+Approval Probability
+</p>
+
+<div class="progress">
+
+<div
+class="approvedBar"
+style="width:${result.probability_approved}%">
+
+${result.probability_approved}%
+
+</div>
+
+</div>
+
+
+<p>
+Rejection Probability
+</p>
+
+<div class="progress">
+
+<div
+class="rejectedBar"
+style="width:${result.probability_rejected}%">
+
+${result.probability_rejected}%
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="decisionCard">
+
+<h3>
+💡 Decision Factors
+</h3>
+
+<ul>
+
+${result.reasons.map(
+r=>`<li>${r}</li>`
+).join("")}
+
+</ul>
+
+</div>
+
+
+<div class="buttonGrid">
+
+<button
+onclick="location.reload()">
+
+🔄 Predict Again
+
+</button>
+
+<button
+onclick="clearForm()"
+style="background:#f9a602">
+
+🗑 Clear Form
+
+</button>
+
+</div>
+
+`;
+
+});
+
+</script>
+</body>
+</html>
